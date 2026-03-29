@@ -6,6 +6,9 @@ import { getStoreStatus } from '../lib/timing';
 import MenuItem from './components/MenuItem';
 import FloatingCartButton from './components/FloatingCartButton';
 
+export const dynamic = 'force-dynamic';
+
+
 async function getStoreData() {
   const store = await prisma.storeLocation.findFirst({
     include: {

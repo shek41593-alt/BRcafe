@@ -1,4 +1,6 @@
 import prisma from '../../lib/prisma';
+
+export const dynamic = 'force-dynamic';
 import MenuItem from '../components/MenuItem';
 import FloatingCartButton from '../components/FloatingCartButton';
 import MenuClient from './MenuClient';
