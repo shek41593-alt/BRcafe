@@ -1,0 +1,264 @@
+const fs = require('fs');
+
+const rawData = `
+JUICE
+LIME JUICE 30.00
+ORANGE 70.00
+MUSK MELON 70.00
+PINEAPPLE 70.00
+PAPAYA 70.00
+WATERMELON 70.00
+GRAPE 70.00
+POMEGRANATE 80.00
+MUSAMBI 70.00
+MANGO (SEASONAL) 80.00
+MIX FRUIT 80.00
+GRAPE & PINEAPPLE 90.00
+
+FRUIT MILK SHAKE
+CHIKKU SHAKE 80|110
+APPLE SHAKE 80|110
+MUSK MELON SHAKE 80|110
+BANANA SHAKE 80|110
+PAPAYA SHAKE 80|110
+POMEGRANATE SHAKE 90|110
+APPLE & CHIKKU SHAKE 100|130
+MANGO SHAKE (SEASONAL) 90|120
+BANANA & CHIKKU SHAKE 90|120
+BUTTER FRUIT SHAKE (SEASONAL) 120|150
+
+KULUKKI JUICE
+ORANGE 60.00
+PINEAPPLE 60.00
+PASSION FRUIT 70.00
+
+MOJITO
+MINT MOJITO 70.00
+PINEAPPLE 70.00
+PASSION FRUIT 90.00
+BLUEBERRY 100.00
+STRAWBERY 70.00
+
+SODA
+JALJEERA SODA 30.00
+LIME SODA 30.00
+KOKUM SODA 40.00
+BLUE MINT 50.00
+GINGER MINT 50.00
+
+MILK SHAKE
+COLD COFFEE 60|90.00
+VANILLA 75|100.00
+STRAWBERY 75|100.00
+BADAM 75|100.00
+PISTA 75|100.00
+CHOCOLATE 75|100.00
+BUTTERSCOTCH 75|100.00
+HORLICKS 75|100.00
+OREO 100|120.00
+TENDER COCONUT 100|130.00
+DATES 100|130.00
+KITKAT 100|130.00
+SHARJAH 110|140.00
+CASHEW 110|140.00
+DATES TENDER COCONUT 120|150.00
+CASHEW DATES 120|150.00
+DRY FRUITS 120|150.00
+
+SPECIAL ICE CREAM
+FRUIT SALAD WITH VANILLA ICE CREAM 100.00
+SPECIAL FRUIT SALAD 170.00
+KESAR FALOODA 100.00
+ROYAL FALOODA 100.00
+BROWNIE WITH VANILLA ICE CREAM 110.00
+SANDY NUTS 120.00
+CHIKKU ALMOND 120.00
+AMERICAN CHOCONUT 120.00
+DUET 120.00
+ICE CAKE SANDWICH 120.00
+HOT CARROT HALWA WITH VANILLA ICE CREAM 130.00
+CHOCOLATE CHOCONUT 130.00
+GADBAD 150.00
+SPECIAL GADBAD 220.00
+DRY FRUIT GADBAD 240.00
+KIT KAT GADBAD 240.00
+DILKUSH 160.00
+CHOCOLATE DAD 160.00
+VANILLA DAD 150.00
+TROPICAL DHAMAKA 160.00
+TIRAMISU 170.00
+PARFAIT 170.00
+BEE HIVE 160.00
+DRY FRUIT COCKTAIL 170.00
+CHOCOLATE FANTASY 170.00
+
+BR SPECIAL
+COUPLE SPECIAL 220.00
+BR SPECIAL 270.00
+FAMILY SPECIAL 300.00
+
+ICE CREAMS
+VANNILLA 50.00|60.00
+STRAWBERRY 50.00|60.00
+KESAR 65.00|80.00
+TWO IN ONE 70.00
+CHOCOLATE 70.00|75.00
+CHIKKU 70.00|75.00
+BUTTERSCOTCH 70.00|75.00
+PISTA 70.00
+MANGO 70.00
+ARGENTINIAN DULCE DE LECHE 75.00
+BELGIAN CHOCOLATE 75.00
+IDEAL FRUITY 75.00
+BLACK CURRANT 75.00
+SHAHI NUTS 75.00
+ARABIAN DELIGHT 75.00
+CHOCO CHIP 90.00
+
+DOSA ITEMS
+SADA DOSA 40.00
+SET DOSA 60.00
+PLAIN ROAST 60.00
+BENNE DOSA 70.00
+THUPPA DOSA 70.00
+ONION DOSA 70.00
+RAVA DOSA 70.00
+GHEE ROAST 70.00
+BENNE ROAST 70.00
+MASALA DOSA 70.00
+BENNE MASALA DOSA 80.00
+GHEE MASALA DOSA 80.00
+PALAK MASALA DOSA 80.00
+MYSORE MASALA DOSA 90.00
+PANEER MSALA DOSA 110.00
+MASHROOM MASALA DOSA 100.00
+RAVA MASALA DOSA 100.00
+
+HOT BEVERAGES
+BLACK TEA 20.00
+TEA 25.00
+SPECIAL TEA 30.00
+LEMON TEA 20.00
+MASALA TEA 30.00
+BLACK COFFEE 20.00
+COFFEE 30.00
+HOT MILK 25.00
+HOT BADAM 30.00
+HOT BOOST 30.00
+HOT HORLICKS 30.00
+
+PIZZA
+VEG PIZZA (MINI) 80.00
+VEG PIZZA (LARGE) 180.00
+PANEER PIZZA (MINI) 100.00
+PANEER PIZZA (LARGE) 200.00
+MASHROOM PIZZA (MINI) 100.00
+
+CHINESE ITEMS
+CHINESE COMBO 200.00
+VEG FRIED RICE 80.00
+SCHEZWAN FRIED RICE 90.00
+PANEER FRIED RICE 120.00
+MASHROOM FRIED RICE 110.00
+VEG NOODLES 90.00
+SCHEZWAN NOODLES 100.00
+GOBI MANCHURIAN 90.00
+GOBI CHILLI 100.00
+GOBI PEPPER 100.00
+BABY CORN CHILLI 120.00
+BABY CORN MANCHURIAN 110.00
+BABY CORN PEPPER 120.00
+MASHROOM CHILLI 160.00
+MASHROOM MANCHIURIAN 150.00
+MASHROOM PEPPER 160.00
+MASHROOM GHEE ROAST 180.00
+PANEER KABAB 180.00
+PANEER TIKKA FRY 200.00
+PANEER 65 200.00
+LEMON PANEER 210.00
+PANEER CHILLI 190.00
+PANEER MANCHIURIAN 180.00
+PANEER PEPPER 190.00
+PANEER GHEE ROAST 220.00
+
+SOUP
+MANCHAWO SOUP 60.00
+LEMON CORIENDER SOUP 60.00
+CREAM OF MASHROOM SOUP 70.00
+
+CHAT ITEMS
+PANI PURI 50.00
+MASALA PURI 60.00
+SEV PURI 60.00
+DAHI PURI 70.00
+BHEL PURI 60.00
+PAPADI SEV 70.00
+PAV BHAJI 70.00
+CHAT COMBO 200.00
+
+SANDWICHES
+BREAD BUTTER JAM 50.00
+CHEESE SANDWICH 80.00
+CHUTNEY SANDWICH 50.00
+CHUTNEY CHEESE SANDWICH 90.00
+VEG SANDWICH 60.00
+VEG CHEESE SANDWICH 90.00
+PANEER SANDWICH 100.00
+PANEER CHEESE SANDWICH 120.00
+FRENCH FRIES 70.00
+VEG BURGER WITH FRENCH FRIES 100.00
+`;
+
+const getCategoryImg = (cat) => {
+  cat = cat.toUpperCase();
+  if (cat.includes('JUICE') || cat.includes('MOJITO') || cat.includes('SODA')) return "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&auto=format&fit=crop";
+  if (cat.includes('SHAKE')) return "https://images.unsplash.com/photo-1572490122747-3968b75cc699?w=600&auto=format&fit=crop";
+  if (cat.includes('ICE CREAM') || cat.includes('BR SPECIAL')) return "https://images.unsplash.com/photo-1557142046-c704a3adf364?w=600&auto=format&fit=crop";
+  if (cat.includes('DOSA')) return "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop";
+  if (cat.includes('CHINESE') || cat.includes('SOUP')) return "https://images.unsplash.com/photo-1585032226651-759b368d7246?w=600&auto=format&fit=crop";
+  if (cat.includes('SANDWICH')) return "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?w=600&auto=format&fit=crop";
+  if (cat.includes('PIZZA')) return "https://images.unsplash.com/photo-1513104890d38-7c7f89b91e77?w=600&auto=format&fit=crop";
+  if (cat.includes('CHAT')) return "https://images.unsplash.com/photo-1601050690597-df0568a70928?w=600&auto=format&fit=crop";
+  if (cat.includes('HOT BEVERAGES')) return "https://images.unsplash.com/photo-1541167760496-1628856ab772?w=600&auto=format&fit=crop";
+  return "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=600&auto=format&fit=crop";
+};
+
+const lines = rawData.split('\\n').map(l => l.trim()).filter(Boolean);
+let currentCat = '';
+const categories = [];
+const menuItems = [];
+let idCounter = 1;
+
+for (const line of lines) {
+  const isCategory = !line.match(/\\d/);
+  if (isCategory) {
+    currentCat = line;
+    if (!categories.includes(line)) categories.push(line);
+  } else {
+    // line has name and price. price is at the end.
+    const priceMatch = line.match(/(.*?)((\\d+\\.\\d+|\\d+(?:\\|\\d*(?:\\.\\d+)?)*).*)/);
+    if (priceMatch) {
+      const name = priceMatch[1].trim();
+      let price = priceMatch[2].trim();
+      price = price.replace(/\\|/g, ' / '); // make it look beautiful, like "60 / 90.00"
+      
+      const popular = ['MASALA DOSA', 'MINT MOJITO', 'OREO', 'GADBAD', 'PAV BHAJI', 'SCHEZWAN FRIED RICE'].includes(name) || (name.includes('SPECIAL') && idCounter % 3 === 0);
+
+      menuItems.push({
+        id: idCounter++,
+        name,
+        price,
+        description: '',
+        category: currentCat,
+        imageUrl: getCategoryImg(currentCat),
+        popular
+      });
+    }
+  }
+}
+
+const outputFile = 'src/data/menu.js';
+const jsContent = \`export const categories = \${JSON.stringify(categories, null, 2)};\\n\\nexport const menuItems = \${JSON.stringify(menuItems, null, 2)};\\n\`;
+
+fs.writeFileSync(outputFile, jsContent);
+console.log("Written successfully to:", outputFile);

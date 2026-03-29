@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model StoreLocation {
+  id           String         @id @default(uuid())
+  name         String
+  street       String
+  city         String
+  state        String
+  zipCode      String
+  latitude     Float
+  longitude    Float
+  holidayHours HolidayHours[]
+  regularHours OpeningHours[]
+}
+
+model OpeningHours {
+  id        String        @id @default(uuid())
+  dayOfWeek Int
+  openTime  String
+  closeTime String
+  isClosed  Boolean       @default(false)
+  storeId   String
+  store     StoreLocation @relation(fields: [storeId], references: [id])
+}
+
+model HolidayHours {
+  id        String        @id @default(uuid())
+  date      DateTime
+  openTime  String?
+  closeTime String?
+  isClosed  Boolean       @default(true)
+  reason    String?
+  storeId   String
+  store     StoreLocation @relation(fields: [storeId], references: [id])
+}
+
+model AnalyticsEvent {
+  id        String   @id @default(uuid())
+  type      String
+  page      String
+  metadata  Json?
+  createdAt DateTime @default(now())
+}
+
+model Category {
+  id        String     @id @default(uuid())
+  name      String     @unique
+  imageUrl  String?
+  createdAt DateTime   @default(now())
+  items     MenuItem[]
+}
+
+model MenuItem {
+  id          String   @id @default(uuid())
+  name        String
+  price       String
+  description String?
+  imageUrl    String?
+  popular     Boolean  @default(false)
+  categoryId  String
+  createdAt   DateTime @default(now())
+  category    Category @relation(fields: [categoryId], references: [id])
+}
+
+model Order {
+  id              String      @id @default(uuid())
+  customerName    String
+  customerPhone   String
+  orderDetails    String
+  totalAmount     String
+  orderType       String      @default("PICKUP") // "PICKUP" or "DELIVERY"
+  deliveryAddress String?
+  status          OrderStatus @default(PENDING)
+  createdAt       DateTime    @default(now())
+}
+
+enum OrderStatus {
+  PENDING
+  COMPLETED
+  CANCELLED
+}
