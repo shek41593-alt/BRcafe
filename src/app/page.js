@@ -10,25 +10,34 @@ export const dynamic = 'force-dynamic';
 
 
 async function getStoreData() {
-  const store = await prisma.storeLocation.findFirst({
-    include: {
-      regularHours: true,
-      holidayHours: true
-    }
-  });
-  
-  const status = getStoreStatus(store);
-  return { store, status };
+  try {
+    const store = await prisma.storeLocation.findFirst({
+      include: {
+        regularHours: true,
+        holidayHours: true
+      }
+    });
+    const status = getStoreStatus(store);
+    return { store, status };
+  } catch (e) {
+    console.error('DB error fetching store:', e.message);
+    return { store: null, status: { isOpen: false, message: 'Store info unavailable' } };
+  }
 }
 
 export default async function Home() {
   const { store, status } = await getStoreData();
-  
+
   // Fetch popular items from DB
-  const featuredItems = await prisma.menuItem.findMany({
-    where: { popular: true },
-    take: 6
-  });
+  let featuredItems = [];
+  try {
+    featuredItems = await prisma.menuItem.findMany({
+      where: { popular: true },
+      take: 6
+    });
+  } catch (e) {
+    console.error('DB error fetching featured items:', e.message);
+  }
 
   // Schema.org Structured Data
   const jsonLd = {
