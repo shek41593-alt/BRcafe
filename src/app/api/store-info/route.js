@@ -22,7 +22,11 @@ export async function GET() {
       status
     });
   } catch (error) {
-    console.error('API Error:', error);
-    return NextResponse.json({ error: 'Failed to fetch store info' }, { status: 500 });
+    console.error('API Error (Store Info):', error.message);
+    // Return a default store object if DB is down
+    return NextResponse.json({ 
+      name: "B.R Cafe",
+      status: { isOpen: false, message: 'Service temporarily unavailable' }
+    });
   }
 }

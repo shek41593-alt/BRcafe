@@ -11,19 +11,26 @@ const ownerNumber = process.env.OWNER_WHATSAPP_NUMBER;
 export async function POST(request) {
   try {
     const body = await request.json();
-    const { name, phone, message, totalAmount, orderType, deliveryAddress } = body;
+    const { name, phone, message, totalAmount, orderType, deliveryAddress, items } = body;
 
     // 1. Validation
     if (!name || !phone || !message) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
-    // 2. Save to Database (Prisma)
+    // 2. Format order details from items if provided, fallback to message
+    let orderSummary = message;
+    if (items && Array.isArray(items) && items.length > 0) {
+      const itemLines = items.map(item => `- ${item.quantity}x ${item.name} (₹${(item.price * item.quantity).toFixed(2)})`).join('\n');
+      orderSummary = `Items:\n${itemLines}${message ? `\n\nAdditional Note: ${message}` : ''}`;
+    }
+
+    // 3. Save to Database (Prisma)
     const newOrder = await prisma.order.create({
       data: {
         customerName: name,
         customerPhone: phone,
-        orderDetails: message,
+        orderDetails: orderSummary,
         totalAmount: totalAmount || '0.00',
         orderType: orderType || 'PICKUP',
         deliveryAddress: deliveryAddress || null,
@@ -40,13 +47,27 @@ export async function POST(request) {
         const orderIcon = orderType === 'DELIVERY' ? '🚚' : '🥡';
         const deliveryInfo = orderType === 'DELIVERY' ? `\n*Delivery Address*: ${deliveryAddress}` : '\n*Type*: Store Pick up';
         
-        const formattedMessage = `*New Order from B.R Cafe!* ${orderIcon}\n\n*Name*: ${name}\n*Phone*: ${phone}${deliveryInfo}\n\n*Details*:\n${message}\n\n*Total*: ₹${totalAmount || '0.00'}`;
+        const formattedMessage = `*New Order from B.R Cafe!* ${orderIcon}\n\n*Name*: ${name}\n*Phone*: ${phone}${deliveryInfo}\n\n*Details*:\n${orderSummary}\n\n*Total*: ₹${totalAmount || '0.00'}`;
         
+        // 1. Notify Owner
         await client.messages.create({
           body: formattedMessage,
           from: whatsappSender,
           to: `whatsapp:${ownerNumber.startsWith('+') ? ownerNumber : '+91' + ownerNumber}`
         });
+
+        // 2. Notify Customer (as a courtesy if they've joined sandbox)
+        try {
+          const customerMessage = `*Hi ${name}!* ☕\nYour order at *B.R Cafe* has been received!\n\n${orderSummary}\n\n*Total*: ₹${totalAmount || '0.00'}\n\nWe will prepare it shortly. Thank you!`;
+          await client.messages.create({
+            body: customerMessage,
+            from: whatsappSender,
+            to: `whatsapp:${phone.startsWith('+') ? phone : '+91' + phone.replace(/\s+/g, '')}`
+          });
+        } catch (custErr) {
+          console.warn('Could not send WhatsApp to customer (likely not in sandbox):', custErr.message);
+        }
+
         whatsappSent = true;
       } catch (err) {
         console.error('Twilio Error:', err);

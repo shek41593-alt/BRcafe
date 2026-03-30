@@ -36,12 +36,17 @@ const Navbar = () => {
         <Link href="/" className="logo" onClick={closeMenu} style={{
           display: 'flex',
           alignItems: 'center',
-          gap: 'var(--space-2)'
+          gap: 'var(--space-2)',
+          maxWidth: '65%',
+          overflow: 'hidden'
         }}>
-          <span style={{
+          <span className="logo-text" style={{
             fontSize: '1.5rem',
             fontWeight: '700',
-            color: 'var(--color-primary)'
+            color: 'var(--color-primary)',
+            whiteSpace: 'nowrap',
+            textOverflow: 'ellipsis',
+            overflow: 'hidden'
           }}>
             B.R Cafe
           </span>
@@ -73,11 +78,20 @@ const Navbar = () => {
         </nav>
 
         {/* Mobile Toggle & Call Icon */}
-        <div className="mobile-actions" style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-3)' }}>
-          <a href="tel:+8078071741" style={{ color: 'var(--color-primary)' }} className="mobile-call">
+        <div className="mobile-actions" style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          gap: 'var(--space-4)',
+          flexShrink: 0
+        }}>
+          <a href="tel:+8078071741" style={{ color: 'var(--color-primary)', display: 'flex' }} className="mobile-call">
             <PhoneCall size={24} />
           </a>
-          <button onClick={toggleMenu} style={{ color: 'var(--color-text-main)' }}>
+          <button onClick={toggleMenu} style={{ 
+            color: 'var(--color-text-main)',
+            display: 'flex',
+            padding: '4px'
+          }}>
             {isOpen ? <X size={28} /> : <MenuIcon size={28} />}
           </button>
         </div>
@@ -126,6 +140,10 @@ const Navbar = () => {
           .desktop-nav { display: block !important; }
           .mobile-actions { display: none !important; }
           .mobile-menu { display: none !important; }
+        }
+        @media (max-width: 480px) {
+          .logo-text { font-size: 1.25rem !important; }
+          .mobile-actions { gap: var(--space-3) !important; }
         }
       `}</style>
     </header>

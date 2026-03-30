@@ -6,10 +6,16 @@ import FloatingCartButton from '../components/FloatingCartButton';
 import MenuClient from './MenuClient';
 
 export default async function MenuPage() {
-  const categories = await prisma.category.findMany({
-    include: { items: true },
-    orderBy: { name: 'asc' }
-  });
+  let categories = [];
+  try {
+    categories = await prisma.category.findMany({
+      include: { items: true },
+      orderBy: { name: 'asc' }
+    });
+  } catch (error) {
+    console.error('Database error fetching menu:', error.message);
+    // categories remains empty array, handled by UI
+  }
 
   const allItems = categories.flatMap(cat => 
     cat.items.map(item => ({

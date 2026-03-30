@@ -104,7 +104,12 @@ const MenuItem = ({ id, name, price, description, category, imageUrl, popular })
           {description}
         </p>
 
-        <div style={{ display: 'flex', gap: 'var(--space-3)', alignItems: 'center' }}>
+        <div className="menu-item-actions" style={{ 
+          display: 'flex', 
+          gap: 'var(--space-2)', 
+          alignItems: 'center',
+          flexWrap: 'wrap'
+        }}>
           <div style={{ 
             display: 'flex', 
             alignItems: 'center', 
@@ -114,11 +119,11 @@ const MenuItem = ({ id, name, price, description, category, imageUrl, popular })
             flexShrink: 0,
             backgroundColor: isSelected ? '#ffffff' : 'var(--color-bg-light)'
           }}>
-            <button onClick={handleDecrease} style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Decrease quantity">
+            <button onClick={handleDecrease} style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Decrease quantity">
               <Minus size={16} />
             </button>
-            <span style={{ width: '30px', textAlign: 'center', fontWeight: '500' }}>{quantity}</span>
-            <button onClick={handleIncrease} style={{ padding: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Increase quantity">
+            <span style={{ width: '24px', textAlign: 'center', fontWeight: '600', fontSize: '0.9rem' }}>{quantity}</span>
+            <button onClick={handleIncrease} style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center' }} aria-label="Increase quantity">
               <Plus size={16} />
             </button>
           </div>
@@ -128,7 +133,10 @@ const MenuItem = ({ id, name, price, description, category, imageUrl, popular })
             className={`btn ${isSelected ? "btn-outline" : "btn-primary"}`} 
             style={{ 
               flexGrow: 1, 
-              padding: '0.5rem',
+              padding: '8px 12px',
+              fontSize: '0.9rem',
+              height: '40px',
+              minWidth: '100px',
               borderColor: isSelected ? 'var(--color-success)' : '',
               color: isSelected ? 'var(--color-success)' : '',
               backgroundColor: isSelected ? 'transparent' : ''
@@ -136,13 +144,13 @@ const MenuItem = ({ id, name, price, description, category, imageUrl, popular })
           >
             {isSelected ? (
               <>
-                <Check size={18} />
-                Selected
+                <Check size={16} />
+                <span style={{ whiteSpace: 'nowrap' }}>Selected</span>
               </>
             ) : (
               <>
-                <ShoppingBag size={18} />
-                Add
+                <ShoppingBag size={16} />
+                <span style={{ whiteSpace: 'nowrap' }}>Add</span>
               </>
             )}
           </button>

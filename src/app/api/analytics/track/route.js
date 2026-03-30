@@ -19,7 +19,8 @@ export async function POST(req) {
 
     return NextResponse.json({ success: true, event });
   } catch (error) {
-    console.error('Analytics Error:', error);
-    return NextResponse.json({ error: 'Failed to track event' }, { status: 500 });
+    console.error('Analytics Error (handled):', error.message);
+    // Silent fail for analytics to prevent blocking the UI
+    return NextResponse.json({ success: false, error: 'Database unavailable' });
   }
 }

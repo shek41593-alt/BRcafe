@@ -77,7 +77,8 @@ const ContactContent = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
-          totalAmount: total > 0 ? total.toFixed(2) : "0.00"
+          totalAmount: total > 0 ? total.toFixed(2) : "0.00",
+          items: cartItems
         })
       });
 

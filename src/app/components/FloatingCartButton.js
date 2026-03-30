@@ -40,6 +40,14 @@ const FloatingCartButton = () => {
           50% { transform: scale(1.05); }
           100% { transform: scale(1); }
         }
+        @media (max-width: 480px) {
+          .btn-primary {
+            padding: 0.75rem 1.25rem !important;
+            font-size: 0.9rem !important;
+            bottom: 1rem !important;
+            right: 1rem !important;
+          }
+        }
       `}</style>
     </div>
   );
